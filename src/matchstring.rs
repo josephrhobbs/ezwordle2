@@ -1,5 +1,7 @@
 //! Matchstring abstraction for the EZWordle2 package.
 
+use std::fmt;
+
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
 /// A match element.
 pub enum Match {
@@ -11,6 +13,20 @@ pub enum Match {
 
     /// Incorrect letter.
     Gray,
+}
+
+impl TryFrom<char> for Match {
+    type Error = fmt::Error;
+
+    fn try_from(c: char) -> Result<Self, Self::Error> {
+        use Match::*;
+        match c {
+            '.' => Ok (Green),
+            '/' => Ok (Yellow),
+            'x' => Ok (Gray),
+            _ => Err (fmt::Error)
+        }
+    }
 }
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
@@ -68,6 +84,36 @@ impl MatchString {
         } else {
             // We never call this method with n > 5
             unreachable!()
+        }
+    }
+
+    /// Check if this matchstring is winning.
+    /// 
+    /// # Parameters
+    /// None.
+    /// 
+    /// # Returns
+    /// A `bool` indicating whether or not the
+    /// player has won.
+    pub fn check(&self) -> bool {
+        *self == Self ([Match::Green; 5])
+    }
+}
+
+impl TryFrom<String> for MatchString {
+    type Error = fmt::Error;
+
+    fn try_from(string: String) -> Result<Self, Self::Error> {
+        if string.len() == 5 {
+            // Initialize an empty matchstring
+            let mut matchstring = Self ([Match::Gray; 5]);
+            for (i, chr) in string.chars().enumerate() {
+                matchstring.0[i] = chr.try_into()?;
+            }
+
+            Ok (matchstring)
+        } else {
+            Err (fmt::Error)
         }
     }
 }

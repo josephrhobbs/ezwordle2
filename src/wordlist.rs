@@ -53,8 +53,8 @@ impl Wordlist {
     /// Filter the wordlist by applying a word and its corresponding matchstring.
     /// 
     /// # Parameters
-    /// - `word` (`Word`): the word applied
-    /// - `matchstring` (`MatchString`): the resultant 
+    /// - `word` (`&Word`): the word applied
+    /// - `matchstring` (`&MatchString`): the resultant 
     /// matchstring
     /// 
     /// # Returns
@@ -69,6 +69,17 @@ impl Wordlist {
         Self {
             words,
         }
+    }
+
+    /// Check if the wordlist contains the given word.
+    /// 
+    /// # Parameters
+    /// - `word` (`&Word`): the word to be checked
+    /// 
+    /// # Returns
+    /// A boolean value, indicating whether the word is contained in the wordlist.
+    pub fn contains(&self, word: &Word) -> bool {
+        self.words.contains(word)
     }
 
     /// Compute the word with the highest information entropy.
